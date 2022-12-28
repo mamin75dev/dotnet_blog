@@ -2,24 +2,35 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleBlog.Context;
 using SimpleBlog.Models;
+using System.Security.Claims;
 
 namespace SimpleBlog.Services.Users
 {
     public class UserService : IUserService
     {
-        private readonly DBContext dBContext;
+        private readonly DataContext _dataContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(DBContext dBContext)
+        public UserService(DataContext dataContext, IHttpContextAccessor httpContextAccessor)
         {
-            this.dBContext = dBContext;
+            _dataContext = dataContext;
+            _httpContextAccessor = httpContextAccessor;
         }
-
+        public string GetUserIdFromRequest()
+        {
+            var result = string.Empty;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            return result;
+        }
         public async Task<ErrorOr<Created>> InsertUser(ApplicationUser user)
         {
             try
             {
-                dBContext.Users.Add(user);
-                await dBContext.SaveChangesAsync();
+                _dataContext.Users.Add(user);
+                await _dataContext.SaveChangesAsync();
 
                 return Result.Created;
             }
@@ -33,7 +44,7 @@ namespace SimpleBlog.Services.Users
         {
             try
             {
-                var user = await dBContext.Users.Select(user => new ApplicationUser
+                var user = await _dataContext.Users.Select(user => new ApplicationUser
                 {
                     Id = user.Id,
                     UserName = user.UserName,

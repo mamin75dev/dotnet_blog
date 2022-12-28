@@ -8,7 +8,7 @@ using SimpleBlog.Context;
 
 namespace SimpleBlog.Migrations
 {
-    [DbContext(typeof(DBContext))]
+    [DbContext(typeof(DataContext))]
     [Migration("20221226124522_users_migration")]
     partial class users_migration
     {

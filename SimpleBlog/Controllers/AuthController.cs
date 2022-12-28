@@ -1,14 +1,15 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using ErrorOr;
+﻿using ErrorOr;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SimpleBlog.Dto.Requests;
 using SimpleBlog.Dto.Responses;
 using SimpleBlog.Models;
 using SimpleBlog.Services.Users;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SimpleBlog.Controllers
 {
@@ -47,8 +48,6 @@ namespace SimpleBlog.Controllers
 
             var registerResponseDto = new RegisterResponseDto(user.Id, user.UserName, user.Email, user.PhoneNumber);
 
-            /*var response = new GenericResponse<RegisterResponseDto>(201, "User Created", registerResponseDto);*/
-
             return Ok(registerResponseDto);
         }
 
@@ -66,9 +65,20 @@ namespace SimpleBlog.Controllers
                 return Unauthorized();
             }
 
-            string token = CreateToken(request);
+            string token = CreateToken(appUser);
 
             return Ok(token);
+        }
+
+        [HttpGet("me"), Authorize]
+        public IActionResult GetMe()
+        {
+            // var userName = User?.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
+            // var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var userName = _userService.GetUserIdFromRequest();
+
+            return Ok(userName);
         }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -89,11 +99,12 @@ namespace SimpleBlog.Controllers
             }
         }
 
-        private string CreateToken(LoginRequestDto request)
+        private string CreateToken(ApplicationUser user)
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, request.UserName)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, "Admin")
             };
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));

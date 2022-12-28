@@ -3,11 +3,11 @@ using SimpleBlog.Models;
 
 namespace SimpleBlog.Context
 {
-    public class DBContext : DbContext
+    public class DataContext : DbContext
     {
         public DbSet<ApplicationUser> Users { get; set; }
 
-        public DBContext(DbContextOptions options) : base(options) { }
+        public DataContext(DbContextOptions options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

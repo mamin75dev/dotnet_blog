@@ -7,5 +7,6 @@ namespace SimpleBlog.Services.Users
     {
         Task<ErrorOr<Created>> InsertUser(ApplicationUser user);
         Task<ErrorOr<ApplicationUser>> GetUser(string userName);
+        string GetUserIdFromRequest();
     }
 }

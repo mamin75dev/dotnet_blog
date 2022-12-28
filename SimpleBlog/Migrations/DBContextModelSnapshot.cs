@@ -7,7 +7,7 @@ using SimpleBlog.Context;
 
 namespace SimpleBlog.Migrations
 {
-    [DbContext(typeof(DBContext))]
+    [DbContext(typeof(DataContext))]
     partial class DBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
