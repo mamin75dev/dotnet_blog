@@ -11,7 +11,7 @@ namespace SimpleBlog.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            /*optionsBuilder.UseMySQL("server=localhost;database=dotnet_blog;uid=root;pwd=Mohamad1375");*/
+            //optionsBuilder.UseMySQL("server=localhost;database=dotnet_blog;uid=root;pwd=Mohamad1375");
         }
     }
 }

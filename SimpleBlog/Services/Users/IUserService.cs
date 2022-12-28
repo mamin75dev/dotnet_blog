@@ -6,6 +6,6 @@ namespace SimpleBlog.Services.Users
     public interface IUserService
     {
         Task<ErrorOr<Created>> InsertUser(ApplicationUser user);
-        /*Task<ErrorOr<User>> GetUser(string email, string password);*/
+        Task<ErrorOr<ApplicationUser>> GetUser(string userName);
     }
 }

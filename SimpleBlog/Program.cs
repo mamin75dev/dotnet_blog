@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore.Extensions;
 using SimpleBlog.Context;
@@ -15,6 +16,7 @@ builder.Services.AddEntityFrameworkMySQL().AddDbContext<DBContext>(options =>
 {
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer()
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();

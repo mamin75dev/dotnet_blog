@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Microsoft.EntityFrameworkCore;
 using SimpleBlog.Context;
 using SimpleBlog.Models;
 
@@ -28,10 +29,26 @@ namespace SimpleBlog.Services.Users
             }
         }
 
-        /*public async Task<ErrorOr<User>> GetUser(string email, string password)
+        public async Task<ErrorOr<ApplicationUser>> GetUser(string userName)
         {
+            try
+            {
+                var user = await dBContext.Users.Select(user => new ApplicationUser
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    PasswordHash = user.PasswordHash,
+                    PasswordSalt = user.PasswordSalt
+                }).FirstOrDefaultAsync(user => user.UserName == userName);
 
-          
-        }*/
+                return user;
+            }
+            catch (Exception e)
+            {
+                return Error.Failure(code: "Database Error", description: e.Message);
+            }
+        }
     }
 }
